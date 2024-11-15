@@ -1,8 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TsvDiffChecker {
     public static void main(String[] args) {
@@ -19,34 +19,20 @@ public class TsvDiffChecker {
 
             String line1;
             String line2;
-            int lineNumber = 1;
-            List<String> diffResults = new ArrayList<>();
+            Set<Integer> diffResults = new HashSet<>();
 
             while ((line1 = br1.readLine()) != null && (line2 = br2.readLine()) != null) {
                 String[] columns1 = line1.split("\t");
                 String[] columns2 = line2.split("\t");
 
-                List<Integer> diffIndices = new ArrayList<>();
                 for (int i = 0; i < columns1.length; i++) {
                     if (!columns1[i].equals(columns2[i])) {
-                        diffIndices.add(i + 1); // Add 1 to make it human-readable (1-based index)
+                        diffResults.add(i + 1); // Add 1 to make it human-readable (1-based index)
                     }
                 }
-
-                if (!diffIndices.isEmpty()) {
-                    diffResults.add(diffIndices);
-                }
-
-                lineNumber++;
             }
 
-            if (diffResults.isEmpty()) {
-                System.out.println("No differences found.");
-            } else {
-                for (String result : diffResults) {
-                    System.out.println(result);
-                }
-            }
+            diffResults.stream().forEach(System.out::println);
 
         } catch (IOException e) {
             System.err.println("Error reading files: " + e.getMessage());
